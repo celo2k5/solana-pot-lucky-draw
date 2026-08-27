@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { Activity, CircleAlert, Copy, ExternalLink, LoaderCircle, RefreshCw, ShieldCheck, Sparkles, Trophy, Wallet } from 'lucide-react'
 import potMark from './assets/hero.png'
 import './App.css'
@@ -29,7 +29,15 @@ function TokenBadge({ metadata, symbol }: { metadata?: TokenMetadata; symbol?: s
 }
 
 function SolanaLogo() {
-  return <span className="solana-logo" aria-label="Solana"><i /><i /><i /></span>
+  const gradientId = useId()
+  return (
+    <svg className="solana-logo" viewBox="0 0 340 220" role="img" aria-label="Solana">
+      <defs><linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1"><stop stopColor="#14f195" /><stop offset=".48" stopColor="#9945ff" /><stop offset="1" stopColor="#dc1fff" /></linearGradient></defs>
+      <path fill={`url(#${gradientId})`} d="M65 0h255l-65 64H0L65 0Z" />
+      <path fill={`url(#${gradientId})`} d="M0 78h255l65 64H65L0 78Z" />
+      <path fill={`url(#${gradientId})`} d="M65 156h255l-65 64H0l65-64Z" />
+    </svg>
+  )
 }
 
 function App() {
