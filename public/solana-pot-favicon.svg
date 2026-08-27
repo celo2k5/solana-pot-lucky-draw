@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="trim" x1="0" x2="1"><stop stop-color="#9945ff"/><stop offset="1" stop-color="#f26ac9"/></linearGradient>
+    <linearGradient id="sol" x1="0" x2="1"><stop stop-color="#14f1d9"/><stop offset=".55" stop-color="#9945ff"/><stop offset="1" stop-color="#f26ac9"/></linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="#090611"/>
+  <path d="M16 16h32a5 5 0 0 1 5 5v3H11v-3a5 5 0 0 1 5-5Z" fill="url(#trim)"/>
+  <rect x="7" y="21" width="50" height="31" rx="7" fill="#161020" stroke="#bd8bff" stroke-width="2"/>
+  <rect x="11" y="27" width="42" height="18" rx="3" fill="#050308"/>
+  <g fill="url(#sol)">
+    <path d="M14 30h9l-2 2h-9l2-2Zm0 5h9l-2 2h-9l2-2Zm0 5h9l-2 2h-9l2-2Z"/>
+    <path d="M28 30h9l-2 2h-9l2-2Zm0 5h9l-2 2h-9l2-2Zm0 5h9l-2 2h-9l2-2Z"/>
+    <path d="M42 30h9l-2 2h-9l2-2Zm0 5h9l-2 2h-9l2-2Zm0 5h9l-2 2h-9l2-2Z"/>
+  </g>
+  <path d="M14 52h36" stroke="url(#trim)" stroke-width="2"/>
+</svg>
