@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Activity, CircleAlert, ExternalLink, LoaderCircle, RefreshCw, ShieldCheck, Sparkles, Trophy, Wallet } from 'lucide-react'
+import { Activity, CircleAlert, Copy, ExternalLink, LoaderCircle, RefreshCw, ShieldCheck, Sparkles, Trophy, Wallet } from 'lucide-react'
 import potMark from './assets/hero.png'
 import './App.css'
 
@@ -9,7 +9,7 @@ type TokenMetadata = { mint: string | null; symbol: string; name: string; image:
 type Transfer = { wallet: string; amount: number; signature: string | null; status: string; tokenSymbol?: string; tokenMint?: string; tokenMetadata?: TokenMetadata }
 type Cycle = { active: boolean; phase?: string; tokenChosen?: TokenMetadata | null; holdersCount?: number; transfersCompleted?: number }
 type StateData = {
-  config?: { robinhoodMode?: string | boolean; distributionTokens?: string[]; distributionTokenMetadata?: TokenMetadata[] }
+  config?: { robinhoodMode?: string | boolean; tokenMint?: string; distributionTokens?: string[]; distributionTokenMetadata?: TokenMetadata[] }
   schedulerRunning?: boolean; nextDistributionTime?: string | null; secondsRemaining?: number; creatorBalance?: number
   holders?: Array<{ wallet: string }>; currentCycle?: Cycle; history?: Array<{ round: number; status: string }>
 }
@@ -26,6 +26,10 @@ function TokenBadge({ metadata, symbol }: { metadata?: TokenMetadata; symbol?: s
   return safeImage(metadata?.image) && !failed
     ? <img className="token-badge" src={metadata?.image || undefined} alt={`${label} token`} onError={() => setFailed(true)} />
     : <span className="token-badge token-fallback">{label.slice(0, 4)}</span>
+}
+
+function SolanaLogo() {
+  return <span className="solana-logo" aria-label="Solana"><i /><i /><i /></span>
 }
 
 function App() {
@@ -108,6 +112,7 @@ function App() {
   const recipient = transfers[0]
   const phase = phases[cycle.phase || ''] || (cycle.active ? 'Drawing winner' : 'Standing by')
   const liveMode = state.config?.robinhoodMode === 'luckyv1'
+  const currentCA = state.config?.tokenMint
 
   return (
     <main className="app-shell">
@@ -118,9 +123,10 @@ function App() {
       </header>
       <section className="draw-stage" id="draw">
         <div className="stage-copy"><div className="eyebrow"><Sparkles size={15} /> Lucky draw distribution</div><h1>Every holder<br />has a shot.</h1><p>Live distribution tech for the Solana Pot community.</p></div>
-        <div className={`machine ${cycle.active ? 'machine-active' : ''}`}><div className="machine-top"><span>LUCKY DRAW</span><span className="machine-dot" /></div><div className="reels">{[0, 1, 2].map((reel) => <div className="reel" key={reel}><span className="sol-mark">S</span></div>)}</div><div className="machine-base"><span>POWERED BY</span><strong>SOLANA</strong></div>{cycle.active && <div className="winner-pulse"><Trophy size={18} /> Drawing live</div>}</div>
+        <div className={`machine ${cycle.active ? 'machine-active' : ''}`}><div className="machine-top"><span>LUCKY DRAW</span><span className="machine-dot" /></div><div className="reels">{[0, 1, 2].map((reel) => <div className="reel" key={reel}><SolanaLogo /></div>)}</div><div className="machine-base"><span>POWERED BY</span><strong>SOLANA</strong></div>{cycle.active && <div className="winner-pulse"><Trophy size={18} /> Drawing live</div>}</div>
         <aside className="countdown-panel"><span className="panel-kicker">Next draw</span><div className="time-display">{clock.map((unit, index) => <span key={`${unit}-${index}`}>{unit}{index < 2 && <b>:</b>}</span>)}</div><div className="countdown-labels"><span>HRS</span><span>MIN</span><span>SEC</span></div><div className="mode-line"><ShieldCheck size={15} /> {liveMode ? 'Lucky v1 verified' : 'Waiting for luckyv1 mode'}</div></aside>
       </section>
+      <section className="contract-strip" aria-label="Current contract address"><span>Current CA</span><code>{currentCA || 'Awaiting token configuration'}</code><button type="button" title="Copy current contract address" disabled={!currentCA} onClick={() => { if (currentCA) void navigator.clipboard.writeText(currentCA) }}><Copy size={15} /></button>{currentCA && <a href={`https://solscan.io/token/${encodeURIComponent(currentCA)}`} target="_blank" rel="noreferrer" title="View token on Solscan"><ExternalLink size={15} /></a>}</section>
       <section className="metrics"><div><span>Eligible entries</span><strong>{state.holders?.length || 0}</strong><small>holders in the draw</small></div><div><span>Prize wallet</span><strong>{amount(state.creatorBalance)} <em>SOL</em></strong><small>live creator balance</small></div><div><span>Draw status</span><strong className={cycle.active ? 'active-value' : ''}>{phase}</strong><small>{cycle.active ? `${cycle.transfersCompleted || 0} paid this round` : 'listening for next cycle'}</small></div></section>
       <section className="content-grid">
         <article className="recipient-panel"><div className="section-heading"><div><span className="eyebrow"><Trophy size={15} /> Latest recipient</span><h2>{recipient ? 'Pot landed.' : 'The pot is warming up.'}</h2></div><Activity size={20} /></div>{recipient ? <div className="recipient-content"><TokenBadge metadata={recipient.tokenMetadata || metadataByMint[recipient.tokenMint || '']} symbol={recipient.tokenSymbol} /><div className="recipient-amount"><strong>{amount(recipient.amount)}</strong><span>{recipient.tokenMetadata?.symbol || recipient.tokenSymbol || 'TOKEN'} sent</span></div><a className="wallet-link" href={recipient.signature ? `https://solscan.io/tx/${encodeURIComponent(recipient.signature)}` : undefined} target="_blank" rel="noreferrer"><Wallet size={16} /> {shortWallet(recipient.wallet)} {recipient.signature && <ExternalLink size={14} />}</a></div> : <div className="empty-state"><LoaderCircle size={20} /> Waiting for the first transfer event.</div>}</article>
