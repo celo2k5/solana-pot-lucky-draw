@@ -1,6 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { Activity, CircleAlert, Copy, ExternalLink, LoaderCircle, RefreshCw, ShieldCheck, Sparkles, Trophy, Wallet } from 'lucide-react'
-import potMark from './assets/hero.png'
 import './App.css'
 
 const SOCKET_URL = import.meta.env.VITE_DISTRIBUTION_SOCKET_URL || 'wss://marcelo1.up.railway.app'
@@ -126,7 +125,7 @@ function App() {
     <main className="app-shell">
       <div className="noise" aria-hidden="true" />
       <header className="topbar">
-        <a className="brand" href="#draw"><span className="brand-mark"><img src={potMark} alt="" /></span><span>SOLANA <b>POT</b></span></a>
+        <a className="brand" href="#draw"><span className="brand-mark"><img src="/solana-pot-machine.png" alt="" /></span><span>SOLANA <b>POT</b></span></a>
         <div className="header-status"><span className={`connection connection-${connection}`}><i />{connection}</span><button className="icon-button" type="button" title="Reconnect to live feed" onClick={() => socketRef.current?.close()}><RefreshCw size={17} /></button></div>
       </header>
       <section className="draw-stage" id="draw">
